@@ -2,9 +2,12 @@ package com.myweather.android.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.myweather.android.db.City;
 import com.myweather.android.db.County;
 import com.myweather.android.db.Province;
-import com.myweather.android.db.City;
+import com.myweather.android.gson.Weather;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +17,7 @@ import org.json.JSONObject;
  */
 
 public class Utility {
+//    private static final String TAG = "Utility";
     /**
      * 解析和处理服务器返回的省级数据
      */
@@ -78,5 +82,20 @@ public class Utility {
             }
         }
         return false;
+    }
+    /**
+     * 将返回的JSON数据解析成Weather实体类
+     */
+    public static Weather handleWeatherResponse(String response){
+//        Log.d(TAG, "handleWeatherResponse: " + response + "************" + response.length());
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
